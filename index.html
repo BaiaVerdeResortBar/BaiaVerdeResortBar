@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bar de Baia Verde Resort - Registro de Consumo</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+        }
+        .login-container, .reserva-container {
+            background-color: white;
+            padding: 20px 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            width: 400px;
+            margin-right: 20px;
+        }
+        .fatura-container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            width: 400px;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+        h1, h2, h3 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+        }
+        .input-group {
+            margin-bottom: 15px;
+            text-align: left;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #555;
+        }
+        input, select, textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        textarea {
+            resize: vertical;
+            min-height: 60px;
+        }
+        button {
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 5px;
+        }
+        .whatsapp-button {
+    background-color: #25D366;
+    color: white;
+    border: none;
+    padding: 12px 15px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    margin-top: 20px;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.whatsapp-button:hover {
+    background-color: #128C7E;
+}
+
+.whatsapp-button::before {
+    content: "";
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>');
+    background-size: contain;
+}
+        #confirmButton {
+            background-color: #3498db;
+            width: 100%;
+        }
+        #confirmButton:hover {
+            background-color: #2980b9;
+        }
+        #cancelButton {
+            background-color: #e74c3c;
+            width: 100%;
+        }
+        .fatura-item {
+    border-bottom: 1px solid #eee;
+    padding: 10px 0;
+    margin-bottom: 10px;
+}
+
+.fatura-item:last-child {
+    border-bottom: none;
+}
+
+.remove-item {
+    color: #e74c3c;
+    cursor: pointer;
+    margin-left: 10px;
+    font-weight: bold;
+}
+        #cancelButton:hover {
+            background-color: #c0392b;
+        }
+        #addToBillButton {
+            background-color: #2ecc71;
+            width: 100%;
+            margin-top: 15px;
+        }
+        #addToBillButton:hover {
+            background-color: #27ae60;
+        }
+        #error-message {
+            color: red;
+            margin-top: 10px;
+            font-size: 14px;
+        }
+        #modalReserva {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: center;
+        }
+        .preco-container {
+            margin: 10px 0;
+            padding: 10px;
+            background-color: #f8f9fa;
+            border-radius: 4px;
+            font-weight: bold;
+            text-align: center;
+        }
+        .preco-texto {
+            color: #2c3e50;
+        }
+        .preco-valor {
+            color: #27ae60;
+            font-size: 1.2em;
+        }
+        .total-container {
+            margin: 15px 0;
+            padding: 10px;
+            background-color: #e8f4fc;
+            border-radius: 4px;
+            font-weight: bold;
+            text-align: center;
+            display: none;
+        }
+        .total-texto {
+            color: #2c3e50;
+        }
+        .total-valor {
+            color: #2980b9;
+            font-size: 1.3em;
+        }
+        .fatura-item {
+            border-bottom: 1px solid #eee;
+            padding: 10px 0;
+            display: flex;
+            justify-content: space-between;
+        }
+        .fatura-header {
+            font-weight: bold;
+            border-bottom: 2px solid #ddd;
+            margin-bottom: 10px;
+            padding-bottom: 5px;
+        }
+        .fatura-total {
+            font-weight: bold;
+            font-size: 1.2em;
+            margin-top: 15px;
+            padding-top: 10px;
+            border-top: 2px solid #ddd;
+            text-align: right;
+        }
+        .remove-item {
+            color: #e74c3c;
+            cursor: pointer;
+            margin-left: 10px;
+        }
+        .flex-container {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            max-width: 900px;
+        }
+
+    </style>
+</head>
+<body>
+    <!-- Tela de Login -->
+    <div class="login-container" id="telaLogin">
+        <h1>Bar de Baia Verde Resort</h1>
+        <form id="loginForm" action="#" method="POST">
+            <div class="input-group">
+                <label for="username">Nome de usuário:</label>
+                <input type="text" id="username" name="username" required>
+            </div>
+            <div class="input-group">
+                <label for="password">Senha:</label>
+                <input type="password" id="password" name="password" required>
+            </div>
+            <button type="submit">Entrar</button>
+            <div id="error-message"></div>
+        </form>
+    </div>
+
+    <!-- Modal de Reserva -->
+    <div id="modalReserva">
+        <div class="flex-container">
+            <div class="reserva-container">
+                <h2>Registrar Consumo</h2>
+                <form id="reservaForm">
+                    <div class="input-group">
+                        <label for="dataHora">Data e Hora:</label>
+                        <input type="datetime-local" id="dataHora" name="dataHora" required>
+                    </div>
+                    <div class="input-group">
+                        <label for="item">Item do Bar:</label>
+                        <select id="item" name="item" required onchange="atualizarPreco()">
+    <option value="">Selecione...</option>
+    <optgroup label="Águas">
+        <option value="agua_trindade_pequena">Água Trindade Pequena</option>
+        <option value="agua_trindade_grande">Água Trindade Grande</option>
+        <option value="agua_com_gas">Água com Gás</option>
+        <option value="aguas_das_pedras">Águas das Pedras Água Tônica</option>
+    </optgroup>
+    <optgroup label="Bebidas">
+        <option value="cha_frio_lipton">Chá Frio Lipton</option>
+        <option value="spirit_tonic">Spirit Tonic</option>
+        <option value="fanta_laranja">Fanta Laranja</option>
+        <option value="fanta_morango">Fanta Morango</option>
+        <option value="cola">Cola</option>
+        <option value="sprit">Sprit</option>
+    </optgroup>
+    <optgroup label="Sumos Naturais">
+        <option value="papaia">Papaya</option>
+        <option value="laranja">Laranja</option>
+        <option value="limao">Limão</option>
+        <option value="kiwi">Kiwi</option>
+        <option value="melancia">Melancia</option>
+        <option value="ananas">Ananás</option>
+        <option value="tambarina">Tambarina</option>
+        <option value="manga">Manga</option>
+    </optgroup>
+    <optgroup label="Compal">
+        <option value="compal_grande">Compal Grande</option>
+        <option value="compal_piquinote">Compal Pequeno</option>
+    </optgroup>
+    <optgroup label="Bebidas Alcoólicas">
+        <option value="grogue_cana_cana">Grogue Cana Cana</option>
+        <option value="grogue_contrabanda">Grogue Contrabanda</option>
+        <option value="grogue_mel_branca">Grogue Mel Branca</option>
+        <option value="ponche_mel">Ponche Mel</option>
+        <option value="ponche_tambarina">Ponche Tambarina</option>
+        <option value="ponche_coco">Ponche Coco</option>
+        <option value="kriola">Kriola</option>
+        <option value="superbock">Super Bock</option>
+        <option value="cerveja_pressao_pequena">Cerveja Pressão Pequena</option>
+        <option value="cerveja_pressao_grande">Cerveja Pressão Grande</option>
+    </optgroup>
+</select>
+                    </div>
+                    
+                    <div class="preco-container" id="precoContainer" style="display:none;">
+                        <span class="preco-texto">Preço unitário: </span>
+                        <span class="preco-valor" id="precoItem">0€</span>
+                    </div>
+                    
+                    <div class="input-group">
+                        <label for="quantidade">Quantidade:</label>
+                        <input type="number" id="quantidade" name="quantidade" min="1" value="1" required oninput="calcularTotal()">
+                    </div>
+                    
+                    <div class="total-container" id="totalContainer">
+                        <span class="total-texto">Total: </span>
+                        <span class="total-valor" id="totalItem">0€</span>
+                    </div>
+                    
+                    <div class="input-group">
+                        <label for="descricao">Descrição do Cliente:</label>
+                        <textarea id="descricao" name="descricao" placeholder="Ex: Nome do cliente, algo que o identifique, preferências especiais..."></textarea>
+                    </div>
+                    
+                    <button type="button" id="addToBillButton">Adicionar na Fatura</button>
+                </form>
+            </div>
+
+            <!-- Container da Fatura -->
+            <div class="fatura-container" id="faturaContainer">
+                <h3>Fatura</h3>
+                <div id="faturaHeader" class="fatura-header">
+                    <span>Item</span>
+                    <span>Total</span>
+                </div>
+                <div id="faturaItens"></div>
+                <div id="faturaTotal" class="fatura-total">Total: 0€</div>
+                <button id="enviarWhatsappButton" class="whatsapp-button">Enviar Fatura por WhatsApp</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Validação do Login
+        document.getElementById('loginForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            const errorMessage = document.getElementById('error-message');
+
+            if (username === 'Djila' && password === 'Djila2025baia') {
+                document.getElementById('telaLogin').style.display = 'none';
+                document.getElementById('modalReserva').style.display = 'flex';
+                
+                const now = new Date();
+                const dateTimeString = now.toISOString().slice(0, 16);
+                document.getElementById('dataHora').value = dateTimeString;
+            } else {
+                errorMessage.textContent = 'Usuário ou senha incorretos!';
+            }
+        });
+
+        // Objeto com os preços (substitua com seus valores reais)
+        const precos = {
+        // Águas
+        'agua_trindade_pequena': 200,
+        'agua_trindade_grande': 100,
+        'agua_com_gas': 200,
+        'aguas_das_pedras': 200,
+        
+        // Bebidas
+        'cha_frio_lipton': 350,
+        'spirit_tonic': 200,
+        'fanta_laranja': 200,
+        'fanta_morango': 200,
+        'cola': 200,
+        'sprit': 200,
+        
+        // Sumos naturais
+        'papaia': 500,
+        'laranja': 500,
+        'limao': 400,
+        'kiwi': 500,
+        'melancia': 500,
+        'ananas': 600,
+        'tambarina': 500,
+        'manga': 600,
+        
+        // Compal
+        'compal_grande': 400,
+        'compal_piquinote': 200,
+        
+        // Bebidas alcoólicas
+        'grogue_cana_cana': 200,
+        'grogue_contrabanda': 350,
+        'grogue_mel_branca': 200,
+        'ponche_mel': 200,
+        'ponche_tambarina': 200,
+        'ponche_coco': 200,
+        'kriola': 200,
+        'superbock': 200,
+        'cerveja_pressao_pequena': 200,
+        'cerveja_pressao_grande': 400
+    };
+
+        // Array para armazenar os itens da fatura
+        let faturaItens = [];
+
+        // Função para atualizar o preço quando o item é selecionado
+        function atualizarPreco() {
+            const itemSelecionado = document.getElementById('item').value;
+            const precoContainer = document.getElementById('precoContainer');
+            const precoItem = document.getElementById('precoItem');
+            
+            if (itemSelecionado && precos[itemSelecionado] !== undefined) {
+                precoItem.textContent = precos[itemSelecionado].toFixed(2) + '€';
+                precoContainer.style.display = 'block';
+                calcularTotal();
+            } else {
+                precoContainer.style.display = 'none';
+                document.getElementById('totalContainer').style.display = 'none';
+            }
+        }
+
+        // Função para calcular o total (preço × quantidade)
+        function calcularTotal() {
+            const itemSelecionado = document.getElementById('item').value;
+            const quantidade = parseInt(document.getElementById('quantidade').value) || 0;
+            const totalContainer = document.getElementById('totalContainer');
+            const totalItem = document.getElementById('totalItem');
+            
+            if (itemSelecionado && precos[itemSelecionado] !== undefined && quantidade > 0) {
+                const total = precos[itemSelecionado] * quantidade;
+                totalItem.textContent = total.toFixed(2) + '€';
+                totalContainer.style.display = 'block';
+            } else {
+                totalContainer.style.display = 'none';
+            }
+        }
+
+        // Função para adicionar item à fatura
+        document.getElementById('addToBillButton').addEventListener('click', function() {
+            const itemSelect = document.getElementById('item');
+            const itemValue = itemSelect.value;
+            const itemText = itemSelect.options[itemSelect.selectedIndex].text;
+            const quantidade = parseInt(document.getElementById('quantidade').value) || 0;
+            const precoUnitario = precos[itemValue];
+            const total = precoUnitario * quantidade;
+            const descricao = document.getElementById('descricao').value;
+            const dataHora = document.getElementById('dataHora').value;
+
+            if (!itemValue || quantidade < 1) {
+                alert('Por favor, selecione um item e uma quantidade válida');
+                return;
+            }
+
+            // Adiciona o item ao array da fatura
+            faturaItens.push({
+                item: itemText,
+                quantidade: quantidade,
+                precoUnitario: precoUnitario,
+                total: total,
+                descricao: descricao,
+                dataHora: dataHora
+            });
+
+            // Atualiza a exibição da fatura
+            atualizarFatura();
+
+            // Limpa os campos para novo item
+            document.getElementById('quantidade').value = 1;
+            document.getElementById('descricao').value = '';
+            document.getElementById('item').selectedIndex = 0;
+            document.getElementById('precoContainer').style.display = 'none';
+            document.getElementById('totalContainer').style.display = 'none';
+        });
+
+        // Função para atualizar a exibição da fatura
+        function atualizarFatura() {
+    const faturaItensContainer = document.getElementById('faturaItens');
+    const faturaTotalContainer = document.getElementById('faturaTotal');
+    
+    // Limpa os itens atuais
+    faturaItensContainer.innerHTML = '';
+    
+    let totalGeral = 0;
+    
+    // Adiciona cada item à fatura
+    faturaItens.forEach((item, index) => {
+        const itemElement = document.createElement('div');
+        itemElement.className = 'fatura-item';
+        
+        // Formata a data para exibição
+        const dataHora = new Date(item.dataHora);
+        const dataFormatada = dataHora.toLocaleDateString('pt-BR');
+        const horaFormatada = dataHora.toLocaleTimeString('pt-BR', {hour: '2-digit', minute:'2-digit'});
+        
+        itemElement.innerHTML = `
+            <div style="margin-bottom: 5px;">
+                <strong>${item.quantidade}x ${item.item}</strong>
+                <span style="float: right;">${item.total.toFixed(2)}€ 
+                    <span class="remove-item" onclick="removerItemFatura(${index})">✕</span>
+                </span>
+            </div>
+            <div style="font-size: 0.9em; color: #555;">
+                <div>Data: ${dataFormatada} ${horaFormatada}</div>
+                ${item.descricao ? `<div>Cliente: ${item.descricao}</div>` : ''}
+            </div>
+        `;
+        faturaItensContainer.appendChild(itemElement);
+        totalGeral += item.total;
+    });
+            
+            // Atualiza o total geral
+    faturaTotalContainer.textContent = `Total: ${totalGeral.toFixed(2)}€`;
+;
+        }
+
+        // Função para remover item da fatura
+        function removerItemFatura(index) {
+            faturaItens.splice(index, 1);
+            atualizarFatura();
+        }
+
+        // Função para finalizar a fatura
+        document.getElementById('reservaForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            
+            if (faturaItens.length === 0) {
+                alert('Adicione pelo menos um item à fatura');
+                return;
+            }
+            
+            // Calcula o total geral
+            const totalGeral = faturaItens.reduce((total, item) => total + item.total, 0);
+            
+            // Cria o resumo da fatura
+            let resumo = '✅ Fatura Finalizada!\n\n';
+            faturaItens.forEach(item => {
+                resumo += `🍹 ${item.quantidade}x ${item.item} - ${item.total.toFixed(2)}€\n`;
+            });
+            resumo += `\n💵 Total Geral: ${totalGeral.toFixed(2)}€`;
+            
+            alert(resumo);
+            
+            // Limpa tudo
+            faturaItens = [];
+            atualizarFatura();
+            document.getElementById('reservaForm').reset();
+            document.getElementById('precoContainer').style.display = 'none';
+            document.getElementById('totalContainer').style.display = 'none';
+        });
+
+        // Função para cancelar
+        document.getElementById('cancelButton').addEventListener('click', function() {
+            if (confirm('⚠️ Tem certeza que deseja cancelar esta operação?')) {
+                faturaItens = [];
+                atualizarFatura();
+                document.getElementById('reservaForm').reset();
+                document.getElementById('precoContainer').style.display = 'none';
+                document.getElementById('totalContainer').style.display = 'none';
+            }
+        });
+
+        // Atualiza o preço quando a página carrega
+        document.addEventListener('DOMContentLoaded', function() {
+            if (document.getElementById('modalReserva').style.display === 'flex') {
+                atualizarPreco();
+            }
+        });
+
+        // Função para enviar fatura por WhatsApp
+document.getElementById('enviarWhatsappButton').addEventListener('click', function() {
+    if (faturaItens.length === 0) {
+        alert('Adicione itens à fatura antes de enviar');
+        return;
+    }
+
+    // Formata a mensagem para WhatsApp
+    let mensagem = '📋 *Fatura do Bar de Baia Verde Resort* 📋\n\n';
+    
+    // Adiciona itens
+    faturaItens.forEach(item => {
+        const dataHora = new Date(item.dataHora);
+        mensagem += `➡ ${item.quantidade}x ${item.item} - ${item.total.toFixed(2)}€\n`;
+        mensagem += `   ⏱ ${dataHora.toLocaleDateString('pt-BR')} ${dataHora.toLocaleTimeString('pt-BR', {hour: '2-digit', minute:'2-digit'})}\n`;
+        if (item.descricao) {
+            mensagem += `   👤 ${item.descricao}\n`;
+        }
+        mensagem += '\n';
+    });
+
+    // Adiciona total
+    const totalGeral = faturaItens.reduce((total, item) => total + item.total, 0);
+    mensagem += `\n💵 *TOTAL GERAL: ${totalGeral.toFixed(2)}€*`;
+
+    // Codifica a mensagem para URL
+    const mensagemCodificada = encodeURIComponent(mensagem);
+    const numeroWhatsapp = '+2389340975';
+    
+    // Abre o WhatsApp
+    window.open(`https://wa.me/${numeroWhatsapp}?text=${mensagemCodificada}`, '_blank');
+});
+    </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+    // ... outros códigos de inicialização ...
+
+    // Garante que o elemento existe antes de adicionar o listener
+    const whatsappButton = document.getElementById('enviarWhatsappButton');
+    if (whatsappButton) {
+        whatsappButton.addEventListener('click', enviarFaturaWhatsApp);
+    } else {
+        console.error('Botão WhatsApp não encontrado!');
+    }
+});
+
+function enviarFaturaWhatsApp() {
+    if (faturaItens.length === 0) {
+        alert('⚠️ Adicione itens à fatura antes de enviar');
+        return;
+    }
+
+    // Formata a mensagem
+    let mensagem = '*FATURA BAR BAIA VERDE RESORT*\n\n';
+    mensagem += '----------------------------\n';
+    
+    faturaItens.forEach((item, index) => {
+        const dataHora = new Date(item.dataHora);
+        mensagem += `*Item ${index + 1}:*\n`;
+        mensagem += `🍹 ${item.quantidade}x ${item.item}\n`;
+        mensagem += `💰 ${item.total.toFixed(2)}€\n`;
+        mensagem += `⏰ ${dataHora.toLocaleString('pt-BR')}\n`;
+        if (item.descricao) {
+            mensagem += `👤 ${item.descricao}\n`;
+        }
+        mensagem += '----------------------------\n';
+    });
+
+    const totalGeral = faturaItens.reduce((total, item) => total + item.total, 0);
+    mensagem += `\n*TOTAL: ${totalGeral.toFixed(2)}€*`;
+
+    // Número formatado corretamente (remove espaços)
+    const numero = '2389340975'; 
+    const url = `https://wa.me/${numero}?text=${encodeURIComponent(mensagem)}`;
+    
+    // Debug: Mostra a URL no console
+    console.log('URL WhatsApp:', url);
+    
+    // Abre em nova janela com fallback
+    try {
+        const novaJanela = window.open(url, '_blank');
+        if (!novaJanela || novaJanela.closed || typeof novaJanela.closed == 'undefined') {
+            alert('Permita pop-ups para abrir o WhatsApp ou copie esta URL:\n' + url);
+        }
+    } catch (e) {
+        alert('Erro ao abrir WhatsApp: ' + e.message);
+    }
+}
+    </script>
+</body>
+</html>
